@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTalent - Offres Sauvegardées</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+        }
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .breadcrumb a {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        .sync-badge::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--success-text);
+            border-radius: 50%;
+        }
+        
+        .tabs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tabs {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .tab.active {
+            background: var(--text-color);
+            color: white;
+        }
+        .btn-clear {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-clear:hover {
+            color: var(--text-color);
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .job-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            color: white;
+        }
+        .job-content {
+            flex: 1;
+        }
+        .job-top {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .job-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .job-bottom {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .job-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .alert-card {
+            background: var(--blue-bg);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        .alert-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .alert-content {
+            flex: 1;
+        }
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .alert-text {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        @media (max-width: 768px) {
+            .page-header {
+                align-items: flex-start;
+            }
+            .sync-badge {
+                margin-top: 1rem;
+            }
+            .tabs-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+            .job-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .job-top, .job-bottom {
+                flex-wrap: wrap;
+            }
+            .job-bottom span:last-child {
+                margin-left: 0;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            .alert-card {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+            .alert-card > div {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .alert-icon {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <span>D</span> DevTalent
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Offres</a>
+                <a href="offres-suivies.html" class="active">Offres Suivies</a>
+                <a href="#">Entreprises</a>
+                <a href="#">Guide Carrière</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a href="offres-suivies.html" class="btn btn-outline" style="border-color:var(--text-color);">Offres Suivies (3)</a>
+            <a href="index.html" class="btn btn-primary">Publier une offre</a>
+            <div class="btn-icon">JG</div>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 900px; padding-top: 2rem; padding-bottom: 4rem;">
+        <div class="page-header">
+            <div>
+                <div class="breadcrumb">ESPACE CANDIDAT / <a href="#">Favoris Locaux</a></div>
+                <h1 class="page-title">Offres Sauvegardées</h1>
+                <p class="page-subtitle">Consultez et gérez les opportunités de stage et d'alternance que vous avez mises de côté sur ce navigateur.</p>
+            </div>
+            <div class="sync-badge">Stockage local synchronisé</div>
+        </div>
+
+        <div class="tabs-header">
+            <div class="tabs">
+                <span style="font-weight: 500; margin-right: 1rem; display: flex; align-items: center; gap: 0.5rem;">🔖 3 offres enregistrées</span>
+                <span class="tab active">Toutes (3)</span>
+                <span class="tab">Alternances (2)</span>
+                <span class="tab">Stages (1)</span>
+            </div>
+            <button class="btn-clear">🗑️ Tout effacer</button>
+        </div>
+
+        <div class="jobs-list">
+            <!-- Saved Job 1 -->
+            <div class="job-card">
+                <div class="job-logo" style="background:#4338ca;">DD</div>
+                <div class="job-content">
+                    <div class="job-top">
+                        <strong>Datadog</strong> <span style="color:var(--text-muted);">📍 Paris, Île-de-France</span>
+                        <span class="badge badge-purple">Alternance</span>
+                        <span style="color:var(--text-muted);">1 400 € - 1 600 € / mois</span>
+                    </div>
+                    <div class="job-title">Développeur Fullstack React / Node.js (F/H)</div>
+                    <div class="job-bottom">
+                        <span class="badge badge-gray">React</span>
+                        <span class="badge badge-gray">TypeScript</span>
+                        <span class="badge badge-gray">Node.js</span>
+                        <span class="badge badge-gray">GraphQL</span>
+                        <span style="color:var(--text-muted); font-size:0.875rem; margin-left: auto;">• Sauvegardé il y a 2 jours</span>
+                    </div>
+                </div>
+                <div class="job-actions">
+                    <button class="btn btn-outline" style="padding: 0.5rem; color:var(--primary-color); border-color:var(--primary-color);">🔖</button>
+                    <a href="offre-detail.html" class="btn btn-outline">Consulter l'offre →</a>
+                </div>
+            </div>
+
+            <!-- Saved Job 2 -->
+            <div class="job-card">
+                <div class="job-logo" style="background:#ec4899;">QT</div>
+                <div class="job-content">
+                    <div class="job-top">
+                        <strong>Qonto</strong> <span style="color:var(--text-muted);">📍 Paris / Télétravail partiel</span>
+                        <span class="badge badge-blue">Stage</span>
+                        <span style="color:var(--text-muted);">1 300 € - 1 500 € / mois</span>
+                    </div>
+                    <div class="job-title">Stage Développeur Frontend Vue 3 / Nuxt</div>
+                    <div class="job-bottom">
+                        <span class="badge badge-gray">Vue.js</span>
+                        <span class="badge badge-gray">TypeScript</span>
+                        <span class="badge badge-gray">Vite</span>
+                        <span class="badge badge-gray">Tailwind CSS</span>
+                        <span style="color:var(--text-muted); font-size:0.875rem; margin-left: auto;">• Sauvegardé hier</span>
+                    </div>
+                </div>
+                <div class="job-actions">
+                    <button class="btn btn-outline" style="padding: 0.5rem; color:var(--primary-color); border-color:var(--primary-color);">🔖</button>
+                    <button class="btn btn-outline">Consulter l'offre →</button>
+                </div>
+            </div>
+
+            <!-- Saved Job 3 -->
+            <div class="job-card">
+                <div class="job-logo" style="background:#10b981;">AL</div>
+                <div class="job-content">
+                    <div class="job-top">
+                        <strong>Alan</strong> <span style="color:var(--text-muted);">📍 Nantes / Full Remote</span>
+                        <span class="badge badge-purple">Alternance</span>
+                        <span style="color:var(--text-muted);">1 600 € / mois</span>
+                    </div>
+                    <div class="job-title">Alternance Ingénieur DevOps & Cloud AWS</div>
+                    <div class="job-bottom">
+                        <span class="badge badge-gray">Python</span>
+                        <span class="badge badge-gray">Terraform</span>
+                        <span class="badge badge-gray">Docker</span>
+                        <span class="badge badge-gray">AWS</span>
+                        <span style="color:var(--text-muted); font-size:0.875rem; margin-left: auto;">• Sauvegardé il y a 3 heures</span>
+                    </div>
+                </div>
+                <div class="job-actions">
+                    <button class="btn btn-outline" style="padding: 0.5rem; color:var(--primary-color); border-color:var(--primary-color);">🔖</button>
+                    <button class="btn btn-outline">Consulter l'offre →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Card -->
+        <div class="alert-card">
+            <div style="display: flex; align-items: center;">
+                <div class="alert-icon">🔔</div>
+                <div class="alert-content">
+                    <div class="alert-title">Recevez des alertes automatiques pour ces entreprises</div>
+                    <div class="alert-text">Nous pouvons vous notifier dès qu'un nouveau poste junior ou alternance est ouvert chez Datadog, Qonto ou Alan.</div>
+                </div>
+            </div>
+            <button class="btn btn-outline" style="background:white;">Activer les alertes</button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="index.html" class="logo" style="margin-bottom: 1rem;"><span>D</span> DevTalent</a>
+                <p style="color:var(--text-muted); font-size:0.875rem;">La plateforme de référence pour les stages et alternances tech en France.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Opportunités</h4>
+                <ul>
+                    <li><a href="#">Stages Développeur</a></li>
+                    <li><a href="#">Alternances DevOps & Cloud</a></li>
+                    <li><a href="#">Data & IA Internships</a></li>
+                    <li><a href="#">Mes candidatures suivies</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Ressources Étudiants</h4>
+                <ul>
+                    <li><a href="#">Grille des Salaires Tech</a></li>
+                    <li><a href="#">Préparer l'entretien technique</a></li>
+                    <li><a href="#">Modèles de CV Développeur</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Recruteurs</h4>
+                <ul>
+                    <li><a href="index.html">Déposer une opportunité</a></li>
+                    <li><a href="#">Écoles partenaires</a></li>
+                    <li><a href="#">Support Entreprise</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2025 DevTalent. Tous droits réservés.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Fait pour les développeurs</a>
+                <a href="#">Mentions Légales</a>
+                <a href="#">Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

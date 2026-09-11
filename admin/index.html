@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Admin | DevTalent</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Admin Layout Specific Styles */
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* CSS-only mobile menu toggle */
+        #sidebar-toggle {
+            display: none;
+        }
+        #sidebar-toggle:checked ~ .admin-sidebar {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 45;
+            cursor: pointer;
+        }
+        #sidebar-toggle:checked ~ .sidebar-overlay {
+            display: block;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 260px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+        .admin-logo {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .admin-logo span { color: var(--primary-color); }
+        
+        .admin-badge {
+            color: var(--text-color);
+            font-size: 0.875rem;
+            font-weight: normal;
+            margin-left: auto;
+            background: var(--bg-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .admin-nav {
+            padding: 1.5rem 1rem;
+            flex: 1;
+        }
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            border-radius: var(--radius);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        .admin-nav-item:hover {
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+        .admin-nav-item.active {
+            background: var(--blue-bg);
+            color: var(--primary-color);
+        }
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .admin-sidebar-bottom {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Main Content Area */
+        .admin-main {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - 260px);
+        }
+        
+        /* Top Header */
+        .admin-header {
+            height: 70px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            width: 300px;
+        }
+        .header-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.875rem;
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+        .dashboard-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+        .stat-trend {
+            font-size: 0.75rem;
+            color: var(--success-text);
+            font-weight: 500;
+        }
+
+        .section-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .table-simple {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-simple th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .table-simple td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+        .table-simple tr:last-child td {
+            border-bottom: none;
+        }
+        .table-simple tr:hover td {
+            background: var(--bg-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        
+        .close-sidebar-btn {
+            display: none;
+            margin-left: auto;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            line-height: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .admin-main {
+                margin-left: 0;
+                width: 100%;
+            }
+            .mobile-menu-btn,
+            .close-sidebar-btn {
+                display: block;
+            }
+            .admin-header {
+                padding: 0 1rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-search { display: none; }
+            .table-simple thead { display: none; }
+            .table-simple td { display: block; padding: 0.5rem 1rem; }
+            .table-simple tr { border-bottom: 1px solid var(--border-color); display: block; padding: 1rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CSS-only mobile menu toggle -->
+    <input type="checkbox" id="sidebar-toggle">
+    <label for="sidebar-toggle" class="sidebar-overlay"></label>
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span>D</span> DevTalent <span class="admin-badge">Admin</span>
+            <label for="sidebar-toggle" class="close-sidebar-btn">×</label>
+        </div>
+        <nav class="admin-nav">
+            <a href="index.html" class="admin-nav-item active">
+                <span class="nav-icon">[+]</span> Tableau de bord
+            </a>
+            <a href="#" class="admin-nav-item">
+                <span class="nav-icon">[-]</span> Mes Offres
+            </a>
+            <a href="../deposer-offre.html" class="admin-nav-item">
+                <span class="nav-icon">[~]</span> Créer une offre
+            </a>
+            <a href="#" class="admin-nav-item">
+                <span class="nav-icon">[@]</span> Candidatures
+            </a>
+        </nav>
+        <div class="admin-sidebar-bottom">
+            <a href="../index.html" class="admin-nav-item" style="color:#ef4444;">
+                <span class="nav-icon">[x]</span> Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap: 1rem;">
+                <label for="sidebar-toggle" class="mobile-menu-btn">Menu</label>
+                <div class="header-search">
+                    <span style="color:var(--text-muted); font-size: 0.75rem;">Recherche</span>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+            </div>
+            <div class="header-profile">
+                <span style="font-size: 0.875rem; font-weight: 500; color: var(--text-color);">Datadog RH</span>
+                <div class="btn-icon">DD</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Aperçu de l'activité</h1>
+                <p style="color:var(--text-muted); font-size:0.875rem;">Suivez les performances de vos offres de stage et alternance.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Offres Actives</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-trend">+1 cette semaine</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Candidatures Totales</div>
+                    <div class="stat-value">48</div>
+                    <div class="stat-trend">+12 nouveaux profils</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Vues du profil</div>
+                    <div class="stat-value">1,204</div>
+                    <div class="stat-trend">+15% vs mois dernier</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Taux de réponse</div>
+                    <div class="stat-value">92%</div>
+                    <div class="stat-trend">Excellent</div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="section-header">
+                    Dernières candidatures reçues
+                    <a href="#" style="font-size:0.875rem; color:var(--primary-color); font-weight:normal;">Voir tout</a>
+                </div>
+                <table class="table-simple">
+                    <thead>
+                        <tr>
+                            <th>Candidat</th>
+                            <th>Offre concernée</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Thomas Dubois</strong><br>
+                                <span style="color:var(--text-muted); font-size:0.75rem;">Master 2 - EPITECH</span>
+                            </td>
+                            <td>Développeur Frontend Vue 3</td>
+                            <td>Aujourd'hui, 10:30</td>
+                            <td><span class="badge badge-blue">Nouveau</span></td>
+                            <td><a href="#" style="color:var(--primary-color);">Consulter</a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Léa Martin</strong><br>
+                                <span style="color:var(--text-muted); font-size:0.75rem;">Bac+4 - INSA</span>
+                            </td>
+                            <td>Alternance Ingénieur DevOps</td>
+                            <td>Hier</td>
+                            <td><span class="badge badge-purple">En cours</span></td>
+                            <td><a href="#" style="color:var(--primary-color);">Consulter</a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Amine Benali</strong><br>
+                                <span style="color:var(--text-muted); font-size:0.75rem;">M2 Data Science</span>
+                            </td>
+                            <td>Développeur Fullstack React / Node.js</td>
+                            <td>12 Mai 2025</td>
+                            <td><span class="badge badge-green">Accepté</span></td>
+                            <td><a href="#" style="color:var(--primary-color);">Consulter</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

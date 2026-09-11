@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTalent - Développeur Fullstack React / Node.js</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-wrapper {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        .breadcrumb a {
+            color: var(--text-muted);
+        }
+        .breadcrumb a:hover {
+            color: var(--text-color);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .job-hero {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--primary-color);
+        }
+        .hero-top {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .hero-logo {
+            width: 80px;
+            height: 80px;
+            background: #4338ca;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        .hero-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .hero-company {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        .hero-company strong {
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .verified-icon {
+            color: var(--primary-color);
+        }
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .stack-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .stack-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .stack-item::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        .content-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .content-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1rem;
+        }
+        .content-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+        .content-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .skills-box {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+        .skills-box h4 {
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+        }
+        .skills-box ul {
+            list-style: disc;
+            padding-left: 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        .skills-box ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .steps-list {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .steps-list::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+        .step-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+        .step-number {
+            position: absolute;
+            left: -2.75rem;
+            top: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.875rem;
+        }
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .step-title span {
+            font-size: 0.75rem;
+            font-weight: normal;
+            color: var(--text-muted);
+            background: var(--bg-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+        }
+        .step-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .perks-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .perk-card {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .perk-icon {
+            font-size: 1.5rem;
+        }
+        .perk-info h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        .perk-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Sidebar */
+        .apply-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .apply-card .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .apply-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--success-bg);
+            color: var(--success-text);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .info-card-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+        }
+        .info-item span:first-child {
+            color: var(--text-muted);
+        }
+        .info-item span:last-child {
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .company-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+        .company-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background: #4338ca;
+            color: white;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .company-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .company-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .header-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .hero-top {
+                flex-direction: column;
+            }
+            .hero-badges {
+                flex-wrap: wrap;
+            }
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .perks-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-company {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <span>D</span> DevTalent
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Offres</a>
+                <a href="offres-suivies.html">Offres Suivies</a>
+                <a href="#">Entreprises</a>
+                <a href="#">Guide Carrière</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a href="offres-suivies.html" class="btn btn-outline">Offres Suivies (2)</a>
+            <a href="index.html" class="btn btn-primary">Publier une offre</a>
+            <div class="btn-icon">JG</div>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <div class="header-actions">
+            <div class="breadcrumb">
+                <a href="#">← Retour aux offres</a> &nbsp;|&nbsp; <a href="#">Offres</a> / <a href="#">Ingénierie Logicielle</a> / Développeur Fullstack React / Node.js
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-outline">🔖 Suivre cette offre</button>
+                <button class="btn btn-outline">🔗 Partager</button>
+            </div>
+        </div>
+
+        <div class="layout">
+            <!-- Main Content -->
+            <div class="main-content">
+                
+                <!-- Hero -->
+                <div class="job-hero">
+                    <div class="hero-top">
+                        <div class="hero-logo">DD</div>
+                        <div>
+                            <h1 class="hero-title">Développeur Fullstack React / Node.js (F/H)</h1>
+                            <div class="hero-company">
+                                <strong>Datadog <span class="verified-icon">✓</span></strong> 
+                                <span>📍 Paris (75009)</span>
+                                <span>🕒 Publiée le 8 septembre 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-badges">
+                        <span class="badge badge-purple" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Alternance - 1 à 2 ans</span>
+                        <span class="badge badge-blue" style="font-size: 0.875rem; padding: 0.5rem 1rem;">💵 1 400 € - 1 600 € / mois</span>
+                        <span class="badge badge-gray" style="font-size: 0.875rem; padding: 0.5rem 1rem;">🏠 Hybride (2j télétravail)</span>
+                    </div>
+                </div>
+
+                <!-- Stack -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>🛠️</span> Stack technique & Outils
+                        <span style="margin-left: auto; font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">Environnement de production moderne</span>
+                    </div>
+                    <div class="stack-list">
+                        <span class="stack-item">React 18</span>
+                        <span class="stack-item">Node.js</span>
+                        <span class="stack-item">TypeScript</span>
+                        <span class="stack-item">Next.js</span>
+                        <span class="stack-item">PostgreSQL</span>
+                        <span class="stack-item">GraphQL</span>
+                        <span class="stack-item" style="border-color: #f87171;">Jest / Vitest</span>
+                        <span class="stack-item" style="border-color: #fb923c;">Git / GitHub CI</span>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="section">
+                    <div class="section-title">À propos du poste & Missions</div>
+                    <div class="content-text">
+                        Au sein du hub parisien de Datadog, vous rejoindrez l'équipe <strong>Core Platform & Metrics Explorer</strong>. Notre rôle est de concevoir des interfaces ultra-réactives et fiables capables de visualiser des milliards d'événements par seconde en temps réel pour des ingénieurs du monde entier.
+                    </div>
+                    <div class="content-text">
+                        Encadré(e) au quotidien par un(e) Senior Software Engineer dédié(e) qui assurera votre montée en compétences (mentoring, code reviews approfondies), vous travaillerez sur de véritables briques produit déployées en production dès vos premières semaines.
+                    </div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem; font-size: 1rem;">Vos missions principales au quotidien</h4>
+                    <ul class="content-list">
+                        <li><strong>Conception d'interfaces réactives :</strong> Développer des composants React modulaires, performants et accessibles (design system interne Druids) avec TypeScript.</li>
+                        <li><strong>Architecture d'APIs & Services :</strong> Construire et optimiser des micro-services Node.js/TypeScript communiquant via GraphQL et REST avec nos datastores PostgreSQL et Redis.</li>
+                        <li><strong>Qualité & Observabilité :</strong> Rédiger des tests unitaires et d'intégration automatisés (Jest, Testing Library), surveiller les performances réelles avec nos propres dashboards Datadog.</li>
+                        <li><strong>Collaboration transverse :</strong> Participer activement aux sessions de cadrage produit et design critiques avec les Product Designers et Product Managers.</li>
+                    </ul>
+                </div>
+
+                <!-- Profile -->
+                <div class="section">
+                    <div class="section-title">Profil recherché & Compétences</div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="badge badge-blue" style="font-size: 0.875rem; padding: 0.5rem 1rem;">🎓 Bac+4 ou Bac+5 (École d'Ingénieurs, Master Informatique ou formation équivalente)</span>
+                    </div>
+                    <div class="content-text">
+                        Nous recherchons avant tout une personne curieuse, méthodique et passionnée par la tech moderne, désireuse de progresser dans un environnement d'ingénierie d'excellence internationale.
+                    </div>
+                    
+                    <div class="skills-grid">
+                        <div class="skills-box">
+                            <h4>&lt;/&gt; Compétences techniques</h4>
+                            <ul>
+                                <li>Maîtrise solide de JavaScript (ES6+) et bases de TypeScript</li>
+                                <li>Expérience préalable sur React et Node.js (projets d'école ou persos)</li>
+                                <li>Connaissance de Git et des principes des API REST/GraphQL</li>
+                                <li>Sensibilité à l'optimisation des performances web</li>
+                            </ul>
+                        </div>
+                        <div class="skills-box">
+                            <h4>🧠 Soft skills & État d'esprit</h4>
+                            <ul>
+                                <li>Autonomie, rigueur et goût prononcé pour le code propre</li>
+                                <li>Volonté d'apprendre continuellement et d'accueillir le feedback</li>
+                                <li>Bonne communication orale et écrite en français</li>
+                                <li>Anglais technique opérationnel (équipe internationale)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process -->
+                <div class="section">
+                    <div class="section-title">
+                        Processus de recrutement
+                        <span style="margin-left: auto; font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">Délai moyen : 2 semaines</span>
+                    </div>
+                    <div class="steps-list">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Échange de cadrage RH <span>30 min - Visioconférence</span></div>
+                            <div class="step-desc">Discussion informelle avec un recruteur technique sur votre parcours, votre formation, vos affinités pour l'alternance et votre calendrier école/entreprise.</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Test technique & Pair programming <span>1 heure - En ligne</span></div>
+                            <div class="step-desc">Exercice pratique en direct avec un développeur de l'équipe : résolution d'un problème concret en TypeScript/React, orienté raisonnement et collaboration plutôt que par cœur.</div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Entretien Engineering Manager & Offre <span>45 min - Bureaux Paris ou Visio</span></div>
+                            <div class="step-desc">Rencontre avec votre futur tuteur et Manager pour valider les projets d'équipe. Réponse sous 48h accompagnée de la proposition contractuelle détaillée.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perks -->
+                <div class="section">
+                    <div class="section-title">Avantages & Cadre de travail</div>
+                    <div class="perks-grid">
+                        <div class="perk-card">
+                            <div class="perk-icon">🚇</div>
+                            <div class="perk-info">
+                                <h4>Transport pris à 100%</h4>
+                                <p>Prise en charge intégrale du Pass Navigo ou forfait mobilités durables.</p>
+                            </div>
+                        </div>
+                        <div class="perk-card">
+                            <div class="perk-icon">💳</div>
+                            <div class="perk-info">
+                                <h4>Carte Swile 11 €</h4>
+                                <p>Titres-restaurant crédités mensuellement avec prise en charge à 60% employeur.</p>
+                            </div>
+                        </div>
+                        <div class="perk-card">
+                            <div class="perk-icon">💻</div>
+                            <div class="perk-info">
+                                <h4>Matériel High-End</h4>
+                                <p>MacBook Pro 16" M3 Pro, écran 4K externe et accessoires de télétravail fournis.</p>
+                            </div>
+                        </div>
+                        <div class="perk-card">
+                            <div class="perk-icon">📚</div>
+                            <div class="perk-info">
+                                <h4>Budget Conférences & Livres</h4>
+                                <p>Accès aux événements tech parisiens (React Paris, dotJS) et formations illimitées.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar-content">
+                <div class="apply-card">
+                    <div class="apply-meta">
+                        ✓ Réponse garantie sous 5 jours ouvrés
+                    </div>
+                    <button class="btn btn-primary">Postuler à cette offre ↗</button>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">
+                        Contact direct : talent@datadog.fr
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-title">En un coup d'œil</div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span>Type de contrat</span>
+                            <span>Alternance</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Durée</span>
+                            <span>12 à 24 mois</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Démarrage</span>
+                            <span>Sept. / Oct. 2026</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Rythme souhaité</span>
+                            <span>3 sem / 1 sem ou 4j / 1j</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Mode de travail</span>
+                            <span>Hybride (2j remote)</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Rémunération</span>
+                            <span>1 400 € - 1 600 € / m</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="company-card">
+                    <div class="company-header">
+                        <div class="company-logo">DD</div>
+                        <div>
+                            <div style="font-weight: 600;">Datadog France</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Observabilité & Cloud Monitoring</div>
+                        </div>
+                    </div>
+                    <div class="company-desc">
+                        Plateforme d'observabilité et de sécurité cloud SaaS leader mondial, adoptée par plus de 24 000 entreprises clientes. Datadog compte plus de 4 000 collaborateurs à travers le monde avec un centre de R&D majeur à Paris.
+                    </div>
+                    <div class="company-meta">
+                        <span>📍 Siège: Paris - Bd Haussmann (75009)</span>
+                        <span>👥 Taille R&D Paris : ~450 ingénieurs</span>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%; font-size: 0.875rem;">Visiter le site de l'entreprise ↗</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="index.html" class="logo" style="margin-bottom: 1rem;"><span>D</span> DevTalent</a>
+                <p style="color:var(--text-muted); font-size:0.875rem;">La plateforme de référence pour les stages et alternances tech en France.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Opportunités</h4>
+                <ul>
+                    <li><a href="#">Stages Développeur</a></li>
+                    <li><a href="#">Alternances DevOps & Cloud</a></li>
+                    <li><a href="#">Data & IA Internships</a></li>
+                    <li><a href="#">Télétravail Junior</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Ressources Étudiants</h4>
+                <ul>
+                    <li><a href="#">Grille des Salaires Tech</a></li>
+                    <li><a href="#">Préparer l'entretien technique</a></li>
+                    <li><a href="#">Modèles de CV Développeur</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Recruteurs</h4>
+                <ul>
+                    <li><a href="index.html">Publier une mission</a></li>
+                    <li><a href="#">Écoles partenaires</a></li>
+                    <li><a href="#">Support Entreprise</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2025 DevTalent. Tous droits réservés.</div>
+            <div class="footer-bottom-links">
+                <a href="#">Fait pour les développeurs</a>
+                <a href="#">Mentions Légales</a>
+                <a href="#">Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

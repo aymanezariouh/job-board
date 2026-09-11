@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Déposer une opportunité | DevTalent</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Admin Layout Specific Styles */
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* CSS-only mobile menu toggle */
+        #sidebar-toggle {
+            display: none;
+        }
+        #sidebar-toggle:checked ~ .admin-sidebar {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 45;
+            cursor: pointer;
+        }
+        #sidebar-toggle:checked ~ .sidebar-overlay {
+            display: block;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 260px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .admin-logo {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-logo span {
+            color: var(--primary-color);
+        }
+        
+        .admin-badge {
+            color: var(--text-color);
+            font-size: 0.875rem;
+            font-weight: normal;
+            margin-left: auto;
+            background: var(--bg-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .admin-nav {
+            padding: 1.5rem 1rem;
+            flex: 1;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            border-radius: var(--radius);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .admin-nav-item:hover {
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .admin-nav-item.active {
+            background: var(--blue-bg);
+            color: var(--primary-color);
+        }
+
+        .admin-sidebar-bottom {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Main Content Area */
+        .admin-main {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - 260px);
+        }
+
+        /* Top Header */
+        .admin-header {
+            height: 70px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            width: 300px;
+        }
+
+        .header-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 0.875rem;
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Form specific styles (reused from previous design) */
+        .form-wrapper {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .form-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--blue-bg);
+            padding-bottom: 2rem;
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .breadcrumb:hover {
+            color: var(--text-color);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .validation-badge {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .validation-badge::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--success-text);
+            border-radius: 50%;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-number {
+            background: var(--blue-bg);
+            color: var(--primary-color);
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        /* Input with icon */
+        .input-icon-wrapper {
+            position: relative;
+        }
+
+        .input-icon-wrapper .form-control {
+            padding-left: 2.5rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right .7rem top 50%;
+            background-size: .65rem auto;
+        }
+
+        .contract-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .contract-btn {
+            border: 1px solid var(--border-color);
+            background: transparent;
+            padding: 1rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .contract-btn.active {
+            border-color: var(--primary-color);
+            background: var(--blue-bg);
+            color: var(--primary-color);
+        }
+
+        .tech-select-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            background: var(--bg-color);
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .tech-tag.selected {
+            background: var(--text-color);
+            color: white;
+            border-color: var(--text-color);
+        }
+
+        .wysiwyg-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .wysiwyg-toolbar {
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .wysiwyg-btn {
+            background: transparent;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 4px;
+        }
+
+        .wysiwyg-btn:hover {
+            background: var(--border-color);
+        }
+
+        textarea.form-control {
+            border: none;
+            border-radius: 0;
+            resize: vertical;
+            min-height: 120px;
+            background: white;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            margin-bottom: 4rem;
+        }
+
+        .action-right {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        
+        .close-sidebar-btn {
+            display: none;
+            margin-left: auto;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            line-height: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .admin-main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-menu-btn,
+            .close-sidebar-btn {
+                display: block;
+            }
+
+            .admin-header {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .contract-types {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-right {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .action-right button {
+                width: 100%;
+            }
+
+            .form-actions>button {
+                width: 100%;
+                order: 2;
+            }
+
+            .action-right {
+                order: 1;
+            }
+
+            .form-wrapper {
+                padding: 0 1rem;
+            }
+
+            .header-search {
+                display: none;
+            }
+
+            /* Hide search on small mobile */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CSS-only mobile menu toggle -->
+    <input type="checkbox" id="sidebar-toggle">
+    <label for="sidebar-toggle" class="sidebar-overlay"></label>
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span>D</span> DevTalent <span class="admin-badge">Admin</span>
+            <label for="sidebar-toggle" class="close-sidebar-btn">×</label>
+        </div>
+        <nav class="admin-nav">
+            <a href="index.html" class="admin-nav-item">
+                <span class="admin-nav-icon">📊</span> Tableau de bord
+            </a>
+            <a href="#" class="admin-nav-item">
+                <span class="admin-nav-icon">💼</span> Mes Offres
+            </a>
+            <a href="deposer-offre.html" class="admin-nav-item active">
+                <span class="admin-nav-icon">➕</span> Créer une offre
+            </a>
+            <a href="#" class="admin-nav-item">
+                <span class="admin-nav-icon">👥</span> Candidatures
+            </a>
+            <a href="#" class="admin-nav-item">
+                <span class="admin-nav-icon">🏢</span> Profil Entreprise
+            </a>
+        </nav>
+        <div class="admin-sidebar-bottom">
+            <a href="#" class="admin-nav-item">
+                <span class="admin-nav-icon">⚙️</span> Paramètres
+            </a>
+            <a href="index.html" class="admin-nav-item" style="color:#ef4444;">
+                <span class="admin-nav-icon">🚪</span> Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div style="display:flex; align-items:center; gap: 1rem;">
+                <label for="sidebar-toggle" class="mobile-menu-btn">☰</label>
+                <div class="header-search">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Rechercher une offre, un candidat...">
+                </div>
+            </div>
+            <div class="header-profile">
+                <span style="font-size: 0.875rem; font-weight: 500; color: var(--text-color);">Datadog RH</span>
+                <div class="btn-icon">DD</div>
+            </div>
+        </header>
+
+        <!-- Form Wrapper -->
+        <div class="form-wrapper">
+            <a href="#" class="breadcrumb">← Retour à mes offres</a>
+
+            <div class="form-header-container">
+                <div>
+                    <h1 class="form-title">Déposer une opportunité</h1>
+                    <p class="form-subtitle">Remplissez ce formulaire pour publier une offre de stage ou d'alternance
+                        visible par la promotion et les étudiants tech certifiés.</p>
+                </div>
+                <div class="validation-badge">
+                    Validation<br>rapide (≈ 2h)
+                </div>
+            </div>
+
+            <form>
+                <!-- Step 1 -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">1</span> À propos de l'entreprise
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nom de l'organisation ou startup <span
+                                class="required">*</span></label>
+                        <input type="text" class="form-control" value="Datadog"
+                            placeholder="ex. Datadog, Qonto, Doctolib">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Site web ou profil LinkedIn</label>
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon">🔗</span>
+                                <input type="url" class="form-control" value="https://datadoghq.com"
+                                    placeholder="https://entreprise.com/carrieres">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ville & politique télétravail <span
+                                    class="required">*</span></label>
+                            <div class="input-icon-wrapper">
+                                <span class="input-icon">📍</span>
+                                <input type="text" class="form-control" placeholder="ex. Paris 9e (Hybride 2j)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">2</span> L'offre & le contrat
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Intitulé du poste <span class="required">*</span></label>
+                        <input type="text" class="form-control"
+                            placeholder="ex. Développeur(se) Backend Node.js / TypeScript">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Type de contrat <span class="required">*</span></label>
+                        <div class="contract-types">
+                            <button type="button" class="contract-btn">
+                                <span style="color:var(--primary-color);">●</span> Stage (Conventionné)
+                            </button>
+                            <button type="button" class="contract-btn active">
+                                <span style="color:var(--primary-color);">●</span> Alternance (Apprentissage / Pro)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Durée du stage</label>
+                            <input type="text" class="form-control" placeholder="ex. 6 mois (Fév. - Juil. 2025)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rémunération brute mensuelle</label>
+                            <div class="input-icon-wrapper">
+                                <input type="text" class="form-control" placeholder="1400" style="padding-right: 3rem;">
+                                <span
+                                    style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.875rem;">€
+                                    / mois</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Stack & Technologies clés <span
+                                style="font-weight:normal; color:var(--text-muted);">(cliquez pour
+                                sélectionner)</span></label>
+                        <div class="tech-select-container">
+                            <div class="tech-tags">
+                                <span class="tech-tag selected">React</span>
+                                <span class="tech-tag selected">TypeScript</span>
+                                <span class="tech-tag">Node.js</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Go</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">Next.js</span>
+                                <span class="tech-tag">GraphQL</span>
+                                <span class="tech-tag">AWS</span>
+                                <span class="tech-tag">TailwindCSS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">3</span> Détail de la mission
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phrase d'accroche <span class="required">*</span></label>
+                        <input type="text" class="form-control"
+                            placeholder="Synthèse claire visible dans les résultats de recherche (ex: Intégrez l'équipe Core API pour scaler nos microservices à fort trafic...)">
+                        <div class="char-count">0 / 140</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Missions détaillées <span class="required">*</span></label>
+                        <div class="wysiwyg-container">
+                            <div class="wysiwyg-toolbar">
+                                <button type="button" class="wysiwyg-btn" style="font-weight:bold;">B</button>
+                                <button type="button" class="wysiwyg-btn" style="font-style:italic;">I</button>
+                                <button type="button" class="wysiwyg-btn">≡</button>
+                                <button type="button" class="wysiwyg-btn">&lt;/&gt;</button>
+                                <span
+                                    style="margin-left:auto; font-size:0.75rem; color:var(--text-muted); padding:0.25rem;">Markdown
+                                    supporté</span>
+                            </div>
+                            <textarea class="form-control"
+                                placeholder="Décrivez les chantiers techniques concrets, l'environnement de travail et l'encadrement prévu..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Profil recherché & compétences souhaitées</label>
+                        <textarea class="form-control" style="background:var(--bg-color); min-height:80px;"
+                            placeholder="ex. Bac+4/5 en école d'ingénieurs ou université informatique, autonomie avec Git, curiosité pour l'architecture cloud..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <span class="section-number">4</span> Candidature & contact
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Email RH ou lien ATS <span class="required">*</span></label>
+                            <input type="email" class="form-control"
+                                placeholder="recrutement@societe.com ou lien https://...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Délai moyen de réponse</label>
+                            <select class="form-control form-select">
+                                <option>Sous 5 jours ouvrés</option>
+                                <option>Sous 2 semaines</option>
+                                <option>Plus de 2 semaines</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="checkbox-label" style="margin-top:1rem; align-items:flex-start;">
+                        <input type="checkbox" checked style="margin-top:0.25rem;">
+                        <span>Je confirme que cette opportunité respecte les dispositions légales applicables aux
+                            conventions de stage et contrats de travail en alternance.</span>
+                    </label>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" style="border:none;">Annuler</button>
+                    <div class="action-right">
+                        <button type="button" class="btn btn-outline" style="background:var(--card-bg);">💾
+                            Brouillon</button>
+                        <button type="submit" class="btn btn-primary">Publier l'offre ↗</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+
+</html>
